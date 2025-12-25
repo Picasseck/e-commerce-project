@@ -20,8 +20,13 @@ function renderProductsGrid() {
     products.forEach((product) =>{
       html += `
       <div class="product-card">
-          <div class="product-title">${product.name}</div>
+          <div class="product-name">${product.name}</div>
           <div class="product-price">$${formatMoney(product.priceCents)}</div>
+
+          <div class="added-to-cart">
+          <img class="added-icon" src="images/check-mark.png">
+          Added
+          </div>
         
         <button class="add-to-cart-button js-add-to-cart"
            data-product-id="${product.id}">
@@ -40,7 +45,14 @@ function renderProductsGrid() {
       button.addEventListener('click', () => {
         const productId = button.dataset.productId;
         addToCart(productId, 1);
-        upadateCartQuantity();
+        const container = button.closest('.product-card');
+        const added = container.querySelector('.added-to-cart');
+        added.classList.add('is-visible');
+        clearTimeout(added._timer);
+        added._timer = setTimeout(() => {
+          added.classList.remove('is-visible');
+        }, 1200);
+        upadateCartQuantity()
       })
     });
 }

@@ -98,3 +98,26 @@ body {
 .add-to-cart-button:active {
   transform: translateY(1px);
 }
+
+.added-to-cart {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #da2a07;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.added-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.added-to-cart.is-visible {
+  opacity: 1;
+}
