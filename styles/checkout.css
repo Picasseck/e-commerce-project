@@ -70,3 +70,24 @@
   padding-top: 10px;
   margin-top: 10px;
 }
+
+.qty-input,
+.js-save {
+  display: none;
+}
+
+.is-editing .qty-input,
+.is-editing .js-save {
+  display: inline-block;
+}
+
+.is-editing .js-update {
+  display: none;
+}
+
+.qty-input {
+  width: 70px;
+  padding: 8px;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+}

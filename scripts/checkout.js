@@ -1,5 +1,5 @@
 import { products } from '../data/products.js';
-import { getCartItems, calculateCartQuantity, removeFromCart } from '../data/cart.js';
+import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity } from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -52,22 +52,33 @@ function renderCheckout() {
 
   let subtotalCents = 0;
 
-  const html = cartItems.map((item) => {
-    const product = getProductById(item.productId);
+  const html = cartItems.map((cartItem) => {
+    const product = getProductById(cartItem.productId);
     const name = product ? product.name : '(Unknown product)';
     const priceCents = product ? product.priceCents : 0;
-    const lineToTalCents = priceCents * item.quantity;
+    const lineToTalCents = priceCents * cartItem.quantity;
     subtotalCents += lineToTalCents
     return `
       <div class="cart-row">
         <div class="cart-row-name">${name}</div>
         <div class="cart-row-meta">
-            $${formatMoney(priceCents)} • Qty: ${item.quantity} • Line: $${formatMoney(lineToTalCents)}
-          </div>
+            $${formatMoney(priceCents)} • Qty: <span class="js-qty-label">${cartItem.quantity}</span> • Line: $${formatMoney(lineToTalCents)}
+        </div>
+
+        <div class="cart-row-meta">
+          <button class="remove-button js-update" data-product-id="${cartItem.productId}">
+            Update
+          </button>
+
+          <input class="qty-input js-qty-input" type="number" min="1" value="${cartItem.quantity}" />
+
+          <button class="remove-button js-save" data-product-id="${cartItem.productId}">
+            Save
+          </button>
         </div>
 
         <div>
-          <button class="remove-button js-remove" data-product-id="${item.productId}">
+          <button class="remove-button js-remove" data-product-id="${cartItem.productId}">
             Remove
           </button>
         </div>
@@ -87,6 +98,33 @@ function renderCheckout() {
       updateCartQuantity();
     });
   });
+
+  $$('.js-update').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const row = btn.closest('.cart-row');
+    row.classList.add('is-editing');
+
+    const input = row.querySelector('.js-qty-input');
+    input.focus();
+    input.select();
+  });
+});
+
+$$('.js-save').forEach((button) => {
+  button.addEventListener('click', () => {
+    const productId = button.dataset.productId;
+    const row = button.closest('.cart-row');
+    const input = row.querySelector('.js-qty-input');
+
+    let newQty = parseInt(input.value, 10);
+    if (Number.isNaN(newQty) || newQty < 1) newQty = 1;
+
+    updateQuantity(productId, newQty);
+
+    renderCheckout();
+    updateCartQuantity();
+  });
+});
 }
 
 renderCheckout();
