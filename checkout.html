@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cart - E-commerce Project</title>
+    <link rel="stylesheet" href="styles/shared.css" />
+    <link rel="stylesheet" href="styles/checkout.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-left">
+        <a class="logo" href="homePage.html">E-Commerce</a>
+      </div>
+
+      <div class="header-middle">
+        <input class="search-input" type="text" placeholder="Search..." />
+        <button class="search-button" type="button">Search</button>
+      </div>
+
+      <div class="header-right">
+        <a class="nav-link" href="#">Orders</a>
+        <a class="nav-link" href="checkout.html">
+          Cart (<span class="js-cart-quantity">0</span>)
+        </a>
+      </div>
+    </header>
+
+    <main class="main">
+      <h2 class="page-title">Cart</h2>
+      <div class="js-cart"></div>
+    </main>
+
+    <script type="module" src="scripts/checkout.js"></script>
+  </body>
+</html>

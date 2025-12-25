@@ -23,3 +23,7 @@ export function calculateCartQuantity() {
   return cart.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
 }
 
+export function getCartItems() {
+ return cart.map(cartItem => ({ ...cartItem}));
+}
+

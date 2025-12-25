@@ -1,0 +1,13 @@
+.cart-row{
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cart-row-name{
+  font-weight: 700;
+}
