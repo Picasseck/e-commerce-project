@@ -27,3 +27,26 @@ export function getCartItems() {
  return cart.map(cartItem => ({ ...cartItem}));
 }
 
+export function removeFromCart(productId){
+  cart = cart.filter(cartItem => cartItem.productId !== productId);
+  saveToStorage();
+}
+
+export function updateQuantity(productId, newQuantity){
+  const matchingItem = cart.find(cartItem => cartItem.productId === productId);
+
+  if(!matchingItem) return;
+
+  if(newQuantity <= 0) {
+    removeFromCart(productId);
+    return;
+  }
+  matchingItem.quantity = newQuantity;
+  saveToStorage();
+}
+
+export function clearCart() {
+  cart = [];
+  saveToStorage();
+}
+
