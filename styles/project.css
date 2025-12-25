@@ -79,3 +79,22 @@ body {
   color: #b12704;
   font-weight: 700;
 }
+
+.add-to-cart-button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+  background: #ffd814;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-to-cart-button:hover {
+  background: #f7ca00;
+}
+
+.add-to-cart-button:active {
+  transform: translateY(1px);
+}
