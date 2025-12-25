@@ -1,12 +1,11 @@
 import { products } from "../data/products.js";
 import { addToCart, calculateCartQuantity } from '../data/cart.js';
+import { formatMoney } from "./utils/money.js";
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-function formatMoney(cents) {
-  return (cents / 100).toFixed(2);
-}
+
 
 function upadateCartQuantity() {
   const countEl = $('.js-cart-quantity');
