@@ -1,4 +1,4 @@
-import { products } from '../data/products.js';
+import { products } from "../data/products.js";
 import { addToCart, calculateCartQuantity } from '../data/cart.js';
 
 const $ = (sel) => document.querySelector(sel);
