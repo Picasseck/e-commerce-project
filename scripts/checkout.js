@@ -1,6 +1,7 @@
 import { products } from '../data/products.js';
 import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity } from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
+import { getProductById, calculateLineTotalCents, calculateSubtotalCents } from './utils/cartTotals.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -13,9 +14,6 @@ function updateCartQuantity() {
   el.textContent = calculateCartQuantity();
 }
 
-function getProductById(productId) {
-  return products.find(product => product.id === productId);
-}
 
 function renderSummary(subtotalCents) {
   const root = $('.js-checkout-summary');
@@ -50,14 +48,13 @@ function renderCheckout() {
     return;
   }
 
-  let subtotalCents = 0;
+  let subtotalCents = calculateSubtotalCents(cartItems, products);
 
   const html = cartItems.map((cartItem) => {
-    const product = getProductById(cartItem.productId);
+    const product = getProductById(products, cartItem.productId);
     const name = product ? product.name : '(Unknown product)';
     const priceCents = product ? product.priceCents : 0;
-    const lineToTalCents = priceCents * cartItem.quantity;
-    subtotalCents += lineToTalCents
+    const lineToTalCents = calculateLineTotalCents(priceCents, cartItem.quantity)
     return `
       <div class="cart-row">
         <div class="cart-row-name">${name}</div>
@@ -105,9 +102,8 @@ function renderCheckout() {
     row.classList.add('is-editing');
 
     const input = row.querySelector('.js-qty-input');
-     const label = row.querySelector('.js-qty-input');
 
-    let startQty = parseInt(label.value, 10);
+    let startQty = parseInt(input.value, 10);
     if (Number.isNaN(startQty) || startQty < 1) startQty = 1;
     input.focus();
     input.select();
