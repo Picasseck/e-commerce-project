@@ -105,8 +105,24 @@ function renderCheckout() {
     row.classList.add('is-editing');
 
     const input = row.querySelector('.js-qty-input');
+     const label = row.querySelector('.js-qty-input');
+
+    let startQty = parseInt(label.value, 10);
+    if (Number.isNaN(startQty) || startQty < 1) startQty = 1;
     input.focus();
     input.select();
+
+    input.addEventListener('keydown', event => {
+      if(event.key === 'Enter'){
+        row.querySelector('.js-save')?.click();
+      }
+
+      if(event.key === 'Escape'){
+        input.value = startQty;
+        row.classList.remove('is-editing');
+      }
+
+    })
   });
 });
 
