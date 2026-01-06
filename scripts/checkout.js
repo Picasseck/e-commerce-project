@@ -1,11 +1,22 @@
 import { products } from '../data/products.js';
 import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity, clearCart} from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
-import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateShippingCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
+import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
 import { addOrder } from '../data/orders.js';
+import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
+import 'https://unpkg.com/dayjs@1.11.10/esm/locale/fr.js';
+import { calculateShippingFromDeliveryOptions } from './utils/cartTotals.js';
+import { updateDeliveryOption } from '../data/cart.js';
+import { deliveryOptions } from '../data/deliveryOptions.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+dayjs.locale('fr');
+
+function formatDeliveryDate(deliveryDays) {
+  return dayjs().add(deliveryDays, 'day').format('dddd D MMMM');
+}
 
 function generateOrderId() {
   if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -96,7 +107,7 @@ function renderCheckout() {
   }
 
   const subtotalCents = calculateSubtotalCents(cartItems, products);
-  const shippingCents = calculateShippingCents(subtotalCents);
+  const shippingCents = calculateShippingFromDeliveryOptions(cartItems, deliveryOptions);
   const taxCents = calculateTaxCents(subtotalCents);
   const totalCents = calculateTotalCents(subtotalCents, shippingCents, taxCents);
   
@@ -105,13 +116,41 @@ function renderCheckout() {
     const product = getProductById(products, cartItem.productId);
     const name = product ? product.name : '(Unknown product)';
     const priceCents = product ? product.priceCents : 0;
-    const lineToTalCents = calculateLineTotalCents(priceCents, cartItem.quantity)
+    const lineToTalCents = calculateLineTotalCents(priceCents, cartItem.quantity);
+
+    const selectedDeliveryId = cartItem.deliveryOptionId || '1';
+    
+    const deliveryHTML = `
+        <div class="delivery-options">
+          <div class="delivery-options-title">Livraison</div>
+          ${deliveryOptions.map(option => {
+            const checked = option.id === selectedDeliveryId ? 'checked' : '';
+            const priceText = option.priceCents === 0 ? 'FREE' : `$${formatMoney(option.priceCents)}`;
+            const dateText = formatDeliveryDate(option.deliveryDays);
+
+            return `
+              <label class="delivery-option js-delivery-option"
+                    data-product-id="${cartItem.productId}"
+                    data-delivery-option-id="${option.id}">
+                <input type="radio" name="delivery-${cartItem.productId}" value="option.id" ${checked}/>
+                <div>
+                  <div class="delivery-option-date">${dateText}</div>
+                  <div class="delivery-option-price">${priceText}</div>
+                </div>
+              </label>
+            `;
+          }).join('')}
+        </div>
+      `;
+    
     return `
       <div class="cart-row">
         <div class="cart-row-name">${name}</div>
         <div class="cart-row-meta">
             $${formatMoney(priceCents)} • Qty: <span class="js-qty-label">${cartItem.quantity}</span> • Line: $${formatMoney(lineToTalCents)}
         </div>
+
+        ${deliveryHTML}
 
         <div class="cart-row-meta">
           <button class="remove-button js-update" data-product-id="${cartItem.productId}">
@@ -137,6 +176,15 @@ function renderCheckout() {
 
   root.innerHTML = html;
   renderSummary({ subtotalCents, shippingCents, taxCents, totalCents }, false);
+
+  $$('.js-delivery-option').forEach((element) => {
+  element.addEventListener('click', () => {
+    const { productId, deliveryOptionId } = element.dataset;
+    updateDeliveryOption(productId, deliveryOptionId);
+    renderCheckout();    
+    updateCartQuantity(); 
+  });
+});
 
   $$('.js-remove').forEach((button) => {
     button.addEventListener('click', () => {

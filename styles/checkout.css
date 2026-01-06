@@ -111,3 +111,9 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.delivery-options { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+.delivery-options-title { font-weight: 700; margin-bottom: 6px; }
+.delivery-option { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; margin: 6px 0; }
+.delivery-option-date { font-weight: 600; }
+.delivery-option-price { color: #555; font-size: 14px; }

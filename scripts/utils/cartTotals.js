@@ -31,3 +31,15 @@ export function calculateShippingCents(subtotalCents, freeShippingThresholdCents
 export function calculateTotalCents(subtotalCents, shippingCents, taxCents) {
   return subtotalCents + shippingCents + taxCents;
 }
+
+export function calculateShippingFromDeliveryOptions(cartItems, deliveryOptions) {
+  let shippingCents = 0;
+
+  cartItems.forEach(cartItem => {
+    const option = deliveryOptions.find(option => option.id === cartItem.deliveryOptionId);
+    if (!option) return;
+    shippingCents += option.priceCents;
+  });
+
+  return shippingCents;
+}
