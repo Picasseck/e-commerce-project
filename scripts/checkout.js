@@ -2,9 +2,24 @@ import { products } from '../data/products.js';
 import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity, clearCart} from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateShippingCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
+import { addOrder } from '../data/orders.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+function generateOrderId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return `order-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function buildOrder(cartItems, totals) {
+  return {
+    id: generateOrderId(),
+    orderTimeMs: Date.now(),
+    items: cartItems.map((item) => ({ ...item })), // snapshot
+    ...totals
+  };
+}
 
 
 
@@ -54,9 +69,17 @@ function renderSummary({subtotalCents, shippingCents, taxCents, totalCents}, isC
 
   placeButton.addEventListener('click', (event) => {
     event.preventDefault();
-    clearCart();
-    renderCheckout();
-    updateCartQuantity();
+   const cartItems = getCartItems();
+  if (cartItems.length === 0) return;
+
+  const totals = { subtotalCents, shippingCents, taxCents, totalCents };
+  const order = buildOrder(cartItems, totals);
+
+  addOrder(order);      
+  clearCart();          
+  updateCartQuantity();
+
+  window.location.href = 'orders.html';
   });
 }
 
@@ -68,7 +91,7 @@ function renderCheckout() {
 
   if (cartItems.length === 0) {
     root.innerHTML = `<p>Your cart is empty.</p>`;
-    renderSummary({subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0});
+    renderSummary({subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0},true);
     return;
   }
 
