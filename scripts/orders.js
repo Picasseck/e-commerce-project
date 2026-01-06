@@ -39,7 +39,13 @@ function renderOrders() {
         <div class="order-item">
           <div class="order-item-name">${name}</div>
           <div class="order-item-qty">Qty: ${item.quantity}</div>
+          <a class="track-link"
+            href="tracking.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(item.productId)}">
+            Track package
+          </a>
         </div>
+
+      
       `;
     }).join('');
 
