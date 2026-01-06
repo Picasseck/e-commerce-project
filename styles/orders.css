@@ -1,0 +1,17 @@
+.main {
+  padding: 16px;
+}
+
+.page-title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.orders-empty {
+  color: #555;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+}
