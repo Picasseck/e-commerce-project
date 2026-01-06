@@ -18,3 +18,16 @@ export function calculateSubtotalCents(cartItems, products) {
 
   return subtotalCents;
 }
+
+export function calculateTaxCents(subtotalCents, taxRate = 0.1) {
+  return Math.round(subtotalCents * taxRate);
+}
+
+export function calculateShippingCents(subtotalCents, freeShippingThresholdCents = 3500, shippingCents = 499) {
+  if (subtotalCents <= 0) return 0;
+  return subtotalCents >= freeShippingThresholdCents ? 0 : shippingCents;
+}
+
+export function calculateTotalCents(subtotalCents, shippingCents, taxCents) {
+  return subtotalCents + shippingCents + taxCents;
+}

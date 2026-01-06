@@ -1,7 +1,7 @@
 import { products } from '../data/products.js';
 import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity } from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
-import { getProductById, calculateLineTotalCents, calculateSubtotalCents } from './utils/cartTotals.js';
+import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateShippingCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -15,7 +15,7 @@ function updateCartQuantity() {
 }
 
 
-function renderSummary(subtotalCents) {
+function renderSummary({subtotalCents, shippingCents, taxCents, totalCents}) {
   const root = $('.js-checkout-summary');
   if (!root) return;
 
@@ -28,9 +28,19 @@ function renderSummary(subtotalCents) {
         <div>$${formatMoney(subtotalCents)}</div>
       </div>
 
+      <div class="summary-row">
+        <div>Shipping</div>
+        <div>$${formatMoney(shippingCents)}</div>
+      </div>
+
+      <div class="summary-row">
+        <div>Tax</div>
+        <div>$${formatMoney(taxCents)}</div>
+      </div>
+
       <div class="summary-row summary-total">
         <div>Total</div>
-        <div>$${formatMoney(subtotalCents)}</div>
+        <div>$${formatMoney(totalCents)}</div>
       </div>
     </div>
   `;
@@ -44,11 +54,14 @@ function renderCheckout() {
 
   if (cartItems.length === 0) {
     root.innerHTML = `<p>Your cart is empty.</p>`;
-    renderSummary(0);
+    renderSummary({subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0});
     return;
   }
 
-  let subtotalCents = calculateSubtotalCents(cartItems, products);
+  const subtotalCents = calculateSubtotalCents(cartItems, products);
+  const shippingCents = calculateShippingCents(subtotalCents);
+  const taxCents = calculateTaxCents(subtotalCents);
+  const totalCents = calculateTotalCents(subtotalCents, shippingCents, taxCents);
 
   const html = cartItems.map((cartItem) => {
     const product = getProductById(products, cartItem.productId);
@@ -85,7 +98,7 @@ function renderCheckout() {
   }).join('');
 
   root.innerHTML = html;
-  renderSummary(subtotalCents);
+  renderSummary({subtotalCents, shippingCents, taxCents, totalCents});
 
   $$('.js-remove').forEach((button) => {
     button.addEventListener('click', () => {
