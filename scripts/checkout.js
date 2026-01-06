@@ -1,5 +1,5 @@
 import { products } from '../data/products.js';
-import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity } from '../data/cart.js';
+import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity, clearCart} from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateShippingCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
 
@@ -15,7 +15,7 @@ function updateCartQuantity() {
 }
 
 
-function renderSummary({subtotalCents, shippingCents, taxCents, totalCents}) {
+function renderSummary({subtotalCents, shippingCents, taxCents, totalCents}, isCartEmpty) {
   const root = $('.js-checkout-summary');
   if (!root) return;
 
@@ -42,8 +42,22 @@ function renderSummary({subtotalCents, shippingCents, taxCents, totalCents}) {
         <div>Total</div>
         <div>$${formatMoney(totalCents)}</div>
       </div>
+
+      <button type="button" class="place-order-button js-place-order" ${isCartEmpty ? 'disabled' : ''}>
+        Place order
+      </button>
     </div>
   `;
+
+  const placeButton = root.querySelector('.js-place-order');
+  if (!placeButton) return;
+
+  placeButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    clearCart();
+    renderCheckout();
+    updateCartQuantity();
+  });
 }
 
 function renderCheckout() {
@@ -62,6 +76,7 @@ function renderCheckout() {
   const shippingCents = calculateShippingCents(subtotalCents);
   const taxCents = calculateTaxCents(subtotalCents);
   const totalCents = calculateTotalCents(subtotalCents, shippingCents, taxCents);
+  
 
   const html = cartItems.map((cartItem) => {
     const product = getProductById(products, cartItem.productId);
@@ -98,7 +113,7 @@ function renderCheckout() {
   }).join('');
 
   root.innerHTML = html;
-  renderSummary({subtotalCents, shippingCents, taxCents, totalCents});
+  renderSummary({ subtotalCents, shippingCents, taxCents, totalCents }, false);
 
   $$('.js-remove').forEach((button) => {
     button.addEventListener('click', () => {

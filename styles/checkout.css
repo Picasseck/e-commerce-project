@@ -91,3 +91,23 @@
   border: 1px solid #d5d9d9;
   border-radius: 8px;
 }
+
+.place-order-button {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5d9d9;
+  border-radius: 10px;
+  background: #ffd814;
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 12px;
+}
+
+.place-order-button:hover {
+  background: #f7ca00;
+}
+
+.place-order-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
