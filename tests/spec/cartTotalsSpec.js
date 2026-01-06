@@ -1,7 +1,5 @@
-import {
-  getProductById,
-  calculateLineTotalCents,
-  calculateSubtotalCents
+import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateShippingCents, 
+  calculateTaxCents, calculateTotalCents
 } from '../../scripts/utils/cartTotals.js';
 
 describe('cartTotals', () => {
@@ -60,5 +58,36 @@ describe('cartTotals', () => {
       const cartItems = [{ productId: 'p1', quantity: 2 }];
       expect(calculateSubtotalCents(cartItems, [])).toBe(0);
     });
+  });
+});
+
+describe('calculateTaxCents', () => {
+  it('returns 0 when subtotal is 0', () => {
+    expect(calculateTaxCents(0)).toBe(0);
+  });
+
+  it('calculates and rounds tax', () => {
+    expect(calculateTaxCents(999, 0.1)).toBe(100); // 99.9 => 100
+  });
+});
+
+describe('calculateShippingCents', () => {
+  it('returns 0 when subtotal is 0', () => {
+    expect(calculateShippingCents(0)).toBe(0);
+  });
+
+  it('charges shipping under threshold', () => {
+    expect(calculateShippingCents(1000, 3500, 499)).toBe(499);
+  });
+
+  it('free shipping at or above threshold', () => {
+    expect(calculateShippingCents(3500, 3500, 499)).toBe(0);
+    expect(calculateShippingCents(5000, 3500, 499)).toBe(0);
+  });
+});
+
+describe('calculateTotalCents', () => {
+  it('adds subtotal + shipping + tax', () => {
+    expect(calculateTotalCents(1000, 499, 100)).toBe(1599);
   });
 });
