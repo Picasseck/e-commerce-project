@@ -2,6 +2,7 @@ import { calculateCartQuantity } from '../data/cart.js';
 import { getOrders } from '../data/orders.js';
 import { products } from '../data/products.js';
 import { getProductById } from './utils/cartTotals.js';
+import { deliveryOptions } from '../data/deliveryOptions.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -49,7 +50,7 @@ function renderTracking() {
   }
 
   const orders = getOrders();
-  const order = orders.find((o) => o.id === orderId);
+  const order = orders.find((order) => order.id === orderId);
 
   if (!order) {
     root.innerHTML = `
@@ -62,7 +63,7 @@ function renderTracking() {
     return;
   }
 
-  const item = (order.items || []).find((it) => it.productId === productId);
+  const item = (order.items || []).find((item) => item.productId === productId);
 
   if (!item) {
     root.innerHTML = `
@@ -80,10 +81,10 @@ function renderTracking() {
 
   const orderTimeMs = order.orderTimeMs || Date.now();
 
-  const estimatedDeliveryTimeMs =
-    item.estimatedDeliveryTimeMs ||
-    order.estimatedDeliveryTimeMs ||
-    (orderTimeMs + 3 * 24 * 60 * 60 * 1000);
+  const selectedOptionId = item.deliveryOptionId || '1';
+  const option = deliveryOptions.find((option) => option.id === selectedOptionId) || deliveryOptions[0];
+
+  const estimatedDeliveryTimeMs = orderTimeMs + option.deliveryDays * 24 * 60 * 60 * 1000;
 
   const nowMs = Date.now();
   const percent = getProgressPercent(nowMs, orderTimeMs, estimatedDeliveryTimeMs);
