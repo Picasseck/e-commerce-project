@@ -14,7 +14,7 @@ function updateCartQuantity() {
 
 function formatDate(ms) {
   if (!ms) return '';
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat('en-US', {
     month: 'long',
     day: 'numeric'
   }).format(new Date(ms));
