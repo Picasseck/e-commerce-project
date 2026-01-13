@@ -1,4 +1,4 @@
-import { calculateCartQuantity } from '../data/cart.js';
+import { calculateCartQuantity, addToCart } from '../data/cart.js';
 import { getOrders } from '../data/orders.js';
 import { products } from '../data/products.js';
 import { formatMoney } from './utils/money.js';
@@ -65,6 +65,11 @@ function renderOrders() {
           <div class="order-item-name">${name}</div>
           <div class="order-item-qty">Qty: ${item.quantity}</div>
           <div class="order-item-delivery">${deliveryText}</div>
+
+          <button class="js-buy-again" data-product-id="${item.productId}">
+            Buy it again
+          </button>
+
           <a class="track-link"
             href="tracking.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(item.productId)}">
             Track package
@@ -89,6 +94,16 @@ function renderOrders() {
       </div>
     `;
   }).join('');
+
+  root.querySelectorAll('.js-buy-again').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const productId = btn.dataset.productId;
+
+    addToCart(productId, 1);
+    updateCartQuantity(); 
+    window.location.href = 'checkout.html'; 
+  });
+});
 }
 
 renderOrders();
