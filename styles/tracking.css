@@ -60,3 +60,12 @@
   text-decoration: none;
   color: #2b7cff;
 }
+
+.progress-steps .is-current {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.progress-steps .is-done {
+  opacity: 0.7;
+}

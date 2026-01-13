@@ -3,6 +3,8 @@ import { getOrders } from '../data/orders.js';
 import { products } from '../data/products.js';
 import { getProductById } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
+import { getProgressPercent, getStepIndex } from './utils/trackingUtils.js';
+import { formatOrdersDate, getDeliveryDateMs } from './utils/ordersUtils.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -12,23 +14,7 @@ function updateCartQuantity() {
   element.textContent = calculateCartQuantity();
 }
 
-function formatDate(ms) {
-  if (!ms) return '';
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric'
-  }).format(new Date(ms));
-}
 
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function getProgressPercent(nowMs, orderTimeMs, deliveryMs) {
-  if (!orderTimeMs || !deliveryMs || deliveryMs <= orderTimeMs) return 0;
-  const raw = ((nowMs - orderTimeMs) / (deliveryMs - orderTimeMs)) * 100;
-  return clamp(raw, 0, 100);
-}
 
 function renderTracking() {
   const root = $('.js-tracking');
@@ -80,14 +66,17 @@ function renderTracking() {
   const productName = product ? product.name : `(Unknown: ${productId})`;
 
   const orderTimeMs = order.orderTimeMs || Date.now();
-
-  const selectedOptionId = item.deliveryOptionId || '1';
-  const option = deliveryOptions.find((option) => option.id === selectedOptionId) || deliveryOptions[0];
-
-  const estimatedDeliveryTimeMs = orderTimeMs + option.deliveryDays * 24 * 60 * 60 * 1000;
+  const estimatedDeliveryTimeMs = getDeliveryDateMs(orderTimeMs, item.deliveryOptionId, deliveryOptions);
 
   const nowMs = Date.now();
   const percent = getProgressPercent(nowMs, orderTimeMs, estimatedDeliveryTimeMs);
+  const stepIndex = getStepIndex(percent);
+
+  function stepClass(i) {
+    if(i < stepIndex) return 'is-done';
+    if(i === stepIndex) return 'is-current';
+    return '';
+  }
 
   root.innerHTML = `
     <div class="tracking-card">
@@ -96,17 +85,17 @@ function renderTracking() {
 
       <div class="tracking-meta">
         <div><strong>Order ID:</strong> ${order.id}</div>
-        <div><strong>Order placed:</strong> ${formatDate(orderTimeMs)}</div>
-        <div><strong>Estimated delivery:</strong> ${formatDate(estimatedDeliveryTimeMs)}</div>
+        <div><strong>Order placed:</strong> ${formatOrdersDate(orderTimeMs)}</div>
+        <div><strong>Estimated delivery:</strong> ${formatOrdersDate(estimatedDeliveryTimeMs)}</div>
         <div><strong>Quantity:</strong> ${item.quantity}</div>
       </div>
 
       <div class="progress">
         <div class="progress-steps">
-          <span>Order placed</span>
-          <span>Shipped</span>
-          <span>Out for delivery</span>
-          <span>Delivered</span>
+          <span class="${stepClass(0)}">Order placed</span>
+          <span class="${stepClass(1)}">Shipped</span>
+          <span class="${stepClass(2)}">Out for delivery</span>
+          <span class="${stepClass(3)}">Delivered</span>
         </div>
 
         <div class="progress-bar">
