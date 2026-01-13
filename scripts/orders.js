@@ -4,6 +4,7 @@ import { products } from '../data/products.js';
 import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
+import { formatOrdersDate, getDeliveryText } from './utils/ordersUtils.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -13,33 +14,6 @@ function updateCartQuantity() {
   el.textContent = calculateCartQuantity();
 }
 
-function formatOrdersDate(ms) {
-  if(!ms) return '';
-  return new Intl.DateTimeFormat('en-US', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
-}
-
-
-function getDeliveryDateMs(orderTimeMs, deliveryOptionId) {
-  const base = Number.isFinite(orderTimeMs) ? orderTimeMs : Date.now();
-  const id = deliveryOptionId || '1';
-  const option = deliveryOptions.find((option) => option.id === id) || deliveryOptions[0];
-  return base + option.deliveryDays * 24 * 60 * 60 * 1000;
-}
-
-function getDeliveryText(orderTimeMs, deliveryOptionId) {
-  const deliveryMs = getDeliveryDateMs(orderTimeMs, deliveryOptionId);
-
-  const now = Date.now();
-  const dateString = new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long'
-  }).format(new Date(deliveryMs));
-
-  return now >= deliveryMs
-    ? `Delivered on ${dateString}`
-    : `Arrives on ${dateString}`;
-}
 
 function renderOrders() {
   const root = $('.js-orders');
@@ -59,7 +33,7 @@ function renderOrders() {
     const itemsHTML = (order.items || []).map((item) => {
       const product = getProductById(products, item.productId);
       const name = product ? product.name : `(Unknown: ${item.productId})`;
-      const deliveryText = getDeliveryText(order.orderTimeMs, item.deliveryOptionId);
+      const deliveryText = getDeliveryText(order.orderTimeMs, item.deliveryOptionId, deliveryOptions);
 
       const priceCents = product ? product.priceCents : 0;
       const lineTotalCents = calculateLineTotalCents(priceCents, item.quantity);
