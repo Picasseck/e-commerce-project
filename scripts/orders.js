@@ -2,7 +2,7 @@ import { calculateCartQuantity, addToCart } from '../data/cart.js';
 import { getOrders } from '../data/orders.js';
 import { products } from '../data/products.js';
 import { formatMoney } from './utils/money.js';
-import { getProductById } from './utils/cartTotals.js';
+import { getProductById, calculateLineTotalCents } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -60,13 +60,18 @@ function renderOrders() {
       const product = getProductById(products, item.productId);
       const name = product ? product.name : `(Unknown: ${item.productId})`;
       const deliveryText = getDeliveryText(order.orderTimeMs, item.deliveryOptionId);
+
+      const priceCents = product ? product.priceCents : 0;
+      const lineTotalCents = calculateLineTotalCents(priceCents, item.quantity);
       return `
         <div class="order-item">
           <div class="order-item-name">${name}</div>
           <div class="order-item-qty">Qty: ${item.quantity}</div>
+          <div class="order-item-price">Price: $${formatMoney(priceCents)}</div>
+          <div class="order-item-line">Line total: $${formatMoney(lineTotalCents)}</div>
           <div class="order-item-delivery">${deliveryText}</div>
 
-          <button class="js-buy-again" data-product-id="${item.productId}">
+          <button class="buy-again-button js-buy-again" data-product-id="${item.productId}">
             Buy it again
           </button>
 
@@ -101,7 +106,15 @@ function renderOrders() {
 
     addToCart(productId, 1);
     updateCartQuantity(); 
-    window.location.href = 'checkout.html'; 
+    
+    const oldText = btn.textContent;
+    btn.textContent = 'Added';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = oldText;
+      btn.disabled = false;
+    }, 1000);
   });
 });
 }

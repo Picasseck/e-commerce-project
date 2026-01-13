@@ -41,9 +41,10 @@
 }
 
 .order-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px 12px;
+  align-items: start;
 }
 
 .order-item-name {
@@ -58,4 +59,27 @@
   color: rgb(0, 118, 0);
   font-weight: 600;
   font-size: 14px;
+}
+
+.order-item-price,
+.order-item-line {
+  color: #555;
+}
+
+.buy-again-button{
+  padding: 8px 10px;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+  background: #ffd814;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.buy-again-button:hover {
+  background: #f7ca00;
+}
+
+.js-buy-again:disabled {
+  opacity: 0.6;
+  cursor: not-allowed
 }
