@@ -13,6 +13,7 @@ export function getDeliveryDateMs(orderTimeMs, deliveryOptionId, deliveryOptions
       : [{ id: '1', deliveryDays: 0 }];
   const id = deliveryOptionId || '1';
   const option = options.find((option) => option.id === id) || options[0];
+  const days = option.deliveryDays;
   return base + days * MS_PER_DAY;
 }
 
