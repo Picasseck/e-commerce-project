@@ -1,4 +1,4 @@
-import { products } from '../data/products.js';
+import { products, loadProductsFetch } from '../data/products.js';
 import { getCartItems, calculateCartQuantity, removeFromCart, updateQuantity, clearCart} from '../data/cart.js';
 import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents, calculateSubtotalCents, calculateTaxCents, calculateTotalCents } from './utils/cartTotals.js';
@@ -238,5 +238,18 @@ $$('.js-save').forEach((button) => {
 });
 }
 
+async function main() {
+  try {
+    await loadProductsFetch();
 renderCheckout();
 updateCartQuantity();
+} catch (error) {
+    console.error(error);
+    const root = $('.js-checkout');
+    if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
+    renderSummary({ subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0 }, true);
+    updateCartQuantity();
+  }
+}
+
+main();

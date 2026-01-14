@@ -1,11 +1,11 @@
-import { products } from "../data/products.js";
+import { products, loadProductsFetch } from "../data/products.js";
 import { addToCart, calculateCartQuantity } from '../data/cart.js';
 import { formatMoney } from "./utils/money.js";
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-
+console.log('loaded')
 
 function upadateCartQuantity() {
   const countEl = $('.js-cart-quantity');
@@ -55,5 +55,20 @@ function renderProductsGrid() {
       })
     });
 }
+
+async function main() {
+  try {
+    await loadProductsFetch();
 renderProductsGrid();
 upadateCartQuantity();
+  } catch (error) {
+    console.error(error);
+    const grid = $('.js-products-grid');
+    if (grid) {
+      grid.innerHTML = `<p>Unable to load products. Start a local server (Live Server) and refresh.</p>`;
+    }
+    upadateCartQuantity();
+  }
+}
+
+main();

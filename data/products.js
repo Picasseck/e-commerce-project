@@ -1,5 +1,19 @@
-export const products = [
-  { id: 'p1', name: 'Black Socks', priceCents: 1090 },
-  { id: 'p2', name: 'Basketball', priceCents: 2095 },
-  { id: 'p3', name: 'T-Shirt Pack', priceCents: 799 }
-];
+export let products = [];
+
+export async function loadProductsFetch() {
+  const url = new URL('./products.json', import.meta.url);
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to load products.json (${response.status})`);
+  }
+
+  const data = await response.json();
+
+  if (!Array.isArray(data)) {
+    throw new Error('products.json must be an array');
+  }
+
+  products = data;
+  return products;
+}
