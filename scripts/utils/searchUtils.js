@@ -6,7 +6,7 @@ export function filterProducts(products, rawText) {
   const searchText = normalizeSearch(rawText);
   if (!searchText) return products;
 
-  return products.filter((p) =>
-    (p.name ?? '').toString().toLowerCase().includes(searchText)
+  return products.filter((product) =>
+    (product.name ?? '').toString().toLowerCase().includes(searchText)
   );
 }
