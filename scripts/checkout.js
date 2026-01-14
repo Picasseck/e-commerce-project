@@ -8,6 +8,7 @@ import 'https://unpkg.com/dayjs@1.11.10/esm/locale/fr.js';
 import { calculateShippingFromDeliveryOptions } from './utils/cartTotals.js';
 import { updateDeliveryOption } from '../data/cart.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
+import { setupHeaderSearchRedirect } from './utils/headerSearch.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -238,18 +239,19 @@ $$('.js-save').forEach((button) => {
 });
 }
 
-async function main() {
-  try {
-    await loadProductsFetch();
-renderCheckout();
-updateCartQuantity();
-} catch (error) {
-    console.error(error);
-    const root = $('.js-checkout');
-    if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
-    renderSummary({ subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0 }, true);
-    updateCartQuantity();
+  async function main() {
+    try {
+      await loadProductsFetch();
+  renderCheckout();
+  updateCartQuantity();
+  setupHeaderSearchRedirect();
+  } catch (error) {
+      console.error(error);
+      const root = $('.js-checkout');
+      if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
+      renderSummary({ subtotalCents: 0, shippingCents: 0, taxCents: 0, totalCents: 0 }, true);
+      updateCartQuantity();
+    }
   }
-}
 
-main();
+  main();

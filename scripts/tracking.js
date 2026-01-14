@@ -5,6 +5,7 @@ import { getProductById } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
 import { getProgressPercent, getStepIndex } from './utils/trackingUtils.js';
 import { formatOrdersDate, getDeliveryDateMs } from './utils/ordersUtils.js';
+import { setupHeaderSearchRedirect } from './utils/headerSearch.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -113,6 +114,7 @@ async function main() {
     await loadProductsFetch();
 renderTracking();
 updateCartQuantity();
+setupHeaderSearchRedirect();
 } catch (error) {
     console.error(error);
     const root = $('.js-orders');
