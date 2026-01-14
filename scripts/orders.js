@@ -5,6 +5,7 @@ import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
 import { formatOrdersDate, getDeliveryText } from './utils/ordersUtils.js';
+import { setupHeaderSearchRedirect } from './utils/headerSearch.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -99,6 +100,7 @@ async function main() {
     await loadProductsFetch();
 renderOrders();
 updateCartQuantity();
+setupHeaderSearchRedirect();
 } catch (error) {
     console.error(error);
     const root = $('.js-orders');
