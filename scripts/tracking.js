@@ -1,6 +1,6 @@
 import { calculateCartQuantity } from '../data/cart.js';
 import { getOrders } from '../data/orders.js';
-import { products } from '../data/products.js';
+import { products, loadProductsFetch } from '../data/products.js';
 import { getProductById } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
 import { getProgressPercent, getStepIndex } from './utils/trackingUtils.js';
@@ -108,5 +108,17 @@ function renderTracking() {
   `;
 }
 
+async function main() {
+  try {
+    await loadProductsFetch();
 renderTracking();
 updateCartQuantity();
+} catch (error) {
+    console.error(error);
+    const root = $('.js-orders');
+    if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
+    updateCartQuantity();
+  }
+}
+
+main();

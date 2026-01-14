@@ -1,6 +1,6 @@
 import { calculateCartQuantity, addToCart } from '../data/cart.js';
 import { getOrders } from '../data/orders.js';
-import { products } from '../data/products.js';
+import { products, loadProductsFetch } from '../data/products.js';
 import { formatMoney } from './utils/money.js';
 import { getProductById, calculateLineTotalCents } from './utils/cartTotals.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
@@ -93,5 +93,18 @@ function renderOrders() {
 });
 }
 
+
+async function main() {
+  try {
+    await loadProductsFetch();
 renderOrders();
 updateCartQuantity();
+} catch (error) {
+    console.error(error);
+    const root = $('.js-orders');
+    if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
+    updateCartQuantity();
+  }
+}
+
+main();
