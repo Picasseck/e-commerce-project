@@ -1,3 +1,13 @@
+export function buildHomeSearchUrl(currentHref, rawQuery) {
+  const q = (rawQuery || '').trim();
+  const url = new URL('homePage.html', currentHref);
+
+  if (q) url.searchParams.set('search', q);
+  else url.searchParams.delete('search');
+
+  return url.toString();
+}
+
 export function setupHeaderSearchRedirect() {
   const input = document.querySelector('.search-input');
   const button = document.querySelector('.search-button');
