@@ -85,3 +85,29 @@
   background: white;
   border-radius: 10px;
 }
+
+.product-rating{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.rating-stars::before{
+  content: "★★★★★";
+  letter-spacing: 2px;
+  background: linear-gradient(
+    90deg,
+    #f0c14b calc((var(--rating) / 5) * 100%),
+    #ddd calc((var(--rating) / 5) * 100%)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.rating-count{
+  color: #555;
+  font-size: 13px;
+}

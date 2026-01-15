@@ -24,12 +24,20 @@ function renderProductsGrid(list) {
    let html = '';
    
     list.forEach((product) =>{
+      const ratingStars = product.ratingStars ?? 0;
+      const ratingCount = product.ratingCount ?? 0;
+
       html += `
       
       <div class="product-card">
         <img class="product-image" src="${product.images}" alt="${product.name}">
-
           <div class="product-name">${product.name}</div>
+
+          <div class="product-rating" style="--rating:${ratingStars}" aria-label="${ratingStars} out of 5 stars">
+            <span class="rating-stars" aria-hidden="true"></span>
+            <span class="rating-count">(${ratingCount})</span>
+          </div>
+
           <div class="product-price">$${formatMoney(product.priceCents)}</div>
 
           <div class="added-to-cart">
