@@ -6,8 +6,6 @@ import { filterProducts } from "./utils/searchUtils.js";
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-console.log('loaded')
-
 function upadateCartQuantity() {
   const countEl = $('.js-cart-quantity');
   if(!countEl) return;
@@ -27,7 +25,10 @@ function renderProductsGrid(list) {
    
     list.forEach((product) =>{
       html += `
+      
       <div class="product-card">
+        <img class="product-image" src="${product.images}" alt="${product.name}">
+
           <div class="product-name">${product.name}</div>
           <div class="product-price">$${formatMoney(product.priceCents)}</div>
 
