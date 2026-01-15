@@ -123,7 +123,7 @@ function renderCheckout() {
     
     const deliveryHTML = `
         <div class="delivery-options">
-          <div class="delivery-options-title">Livraison</div>
+          <div class="delivery-options-title">Delivery</div>
           ${deliveryOptions.map(option => {
             const checked = option.id === selectedDeliveryId ? 'checked' : '';
             const priceText = option.priceCents === 0 ? 'FREE' : `$${formatMoney(option.priceCents)}`;
@@ -133,7 +133,7 @@ function renderCheckout() {
               <label class="delivery-option js-delivery-option"
                     data-product-id="${cartItem.productId}"
                     data-delivery-option-id="${option.id}">
-                <input type="radio" name="delivery-${cartItem.productId}" value="option.id" ${checked}/>
+                <input type="radio" name="delivery-${cartItem.productId}" value="${option.id}" ${checked}/>
                 <div>
                   <div class="delivery-option-date">${dateText}</div>
                   <div class="delivery-option-price">${priceText}</div>
@@ -146,31 +146,31 @@ function renderCheckout() {
     
     return `
       <div class="cart-row">
-        <div class="cart-row-name">${name}</div>
-        <div class="cart-row-meta">
-            $${formatMoney(priceCents)} • Qty: <span class="js-qty-label">${cartItem.quantity}</span> • Line: $${formatMoney(lineToTalCents)}
+        <img class="checkout-item-image" src="${product?.images || ''}" alt="${name}">
+        <div class="cart-row-details">
+          <div class="cart-row-name">${name}</div>
+          <div class="cart-row-meta">
+              $${formatMoney(priceCents)} • Qty: <span class="js-qty-label">${cartItem.quantity}</span> • Line: $${formatMoney(lineToTalCents)}
+          </div>
+
+          ${deliveryHTML}
         </div>
 
-        ${deliveryHTML}
-
-        <div class="cart-row-meta">
+        <div class="cart-row-actions">
           <button class="remove-button js-update" data-product-id="${cartItem.productId}">
             Update
           </button>
 
-          <input class="qty-input js-qty-input" type="number" min="1" value="${cartItem.quantity}" />
+          <input class="qty-input js-qty-input" type="number" min="1" value="${cartItem.quantity}">
 
           <button class="remove-button js-save" data-product-id="${cartItem.productId}">
             Save
           </button>
-        </div>
-
-        <div>
+         
           <button class="remove-button js-remove" data-product-id="${cartItem.productId}">
             Remove
           </button>
         </div>
-
       </div>
     `;
   }).join('');

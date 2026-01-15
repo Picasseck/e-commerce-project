@@ -39,22 +39,25 @@ function renderOrders() {
       const priceCents = product ? product.priceCents : 0;
       const lineTotalCents = calculateLineTotalCents(priceCents, item.quantity);
       return `
-        <div class="order-item">
+      <div class="order-item">
+          <img class="order-item-image" src="${product?.images || ''}" alt="${name}">
+        <div class="order-item-content"> 
           <div class="order-item-name">${name}</div>
-          <div class="order-item-qty">Qty: ${item.quantity}</div>
-          <div class="order-item-price">Price: $${formatMoney(priceCents)}</div>
-          <div class="order-item-line">Line total: $${formatMoney(lineTotalCents)}</div>
+          <div class="order-item-meta">Qty: ${item.quantity} • Price: $${formatMoney(priceCents)} • Line total: $${formatMoney(lineTotalCents)}</div>
           <div class="order-item-delivery">${deliveryText}</div>
+        </div> 
 
-          <button class="buy-again-button js-buy-again" data-product-id="${item.productId}">
-            Buy it again
-          </button>
+        <div class="order-item-actions">     
+            <button class="buy-again-button js-buy-again" data-product-id="${item.productId}">
+              Buy it again
+            </button>
 
-          <a class="track-link"
-            href="tracking.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(item.productId)}">
-            Track package
-          </a>
-        </div>
+            <a class="track-link"
+              href="tracking.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(item.productId)}">
+              Track package
+            </a>
+        </div>  
+      </div>
 
       
       `;
