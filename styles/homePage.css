@@ -1,7 +1,8 @@
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 @media (max-width: 900px) {
@@ -18,9 +19,11 @@
 
 .product-card {
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px;
   background: white;
+  display: grid;
+  gap: 10px;
 }
 
 .product-name {
@@ -73,4 +76,12 @@
 
 .added-to-cart.is-visible {
   opacity: 1;
+}
+
+.product-image {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: white;
+  border-radius: 10px;
 }
