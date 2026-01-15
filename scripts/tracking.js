@@ -81,6 +81,7 @@ function renderTracking() {
 
   root.innerHTML = `
     <div class="tracking-card">
+      <img class="tracking-item-image" src="${product?.images || ''}" alt="${name}">
       <h1 class="tracking-title">Tracking</h1>
       <p class="tracking-subtitle">${productName}</p>
 
