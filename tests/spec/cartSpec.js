@@ -87,4 +87,14 @@ describe('cart', () => {
     expect(saved[0].productId).toBe('p1');
     expect(saved[0].quantity).toBe(2);
   });
+
+  it('adds with a specific quantity', () => {
+  addToCart('p1', 4);
+
+  const items = getCartItems();
+  expect(items.length).toBe(1);
+  expect(items[0].productId).toBe('p1');
+  expect(items[0].quantity).toBe(4);
+  });
+
 });

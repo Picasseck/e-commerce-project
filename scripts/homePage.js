@@ -27,6 +27,11 @@ function renderProductsGrid(list) {
       const ratingStars = product.ratingStars ?? 0;
       const ratingCount = product.ratingCount ?? 0;
 
+      const qtyOptionsHtml = Array.from({ length: 10 }, (_, i) => {
+      const n = i + 1;
+      return `<option value="${n}">${n}</option>`;
+      }).join('');
+
       html += `
       
       <div class="product-card">
@@ -39,6 +44,13 @@ function renderProductsGrid(list) {
           </div>
 
           <div class="product-price">$${formatMoney(product.priceCents)}</div>
+
+          <div class="product-qty">
+            <span class="qty-label">Qty</span>
+            <select class="qty-select js-qty-select">
+              ${qtyOptionsHtml}
+            </select>
+          </div>
 
           <div class="added-to-cart">
           <img class="added-icon" src="images/check-mark.png">
@@ -62,8 +74,10 @@ function renderProductsGrid(list) {
     $$('.js-add-to-cart').forEach((button) => {
       button.addEventListener('click', () => {
         const productId = button.dataset.productId;
-        addToCart(productId, 1);
         const container = button.closest('.product-card');
+        const qtySelect = container.querySelector('.js-qty-select');
+        const qty = qtySelect ? parseInt(qtySelect.value, 10) : 1;
+        addToCart(productId, qty);
         const added = container.querySelector('.added-to-cart');
         added.classList.add('is-visible');
         clearTimeout(added._timer);

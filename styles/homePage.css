@@ -59,7 +59,7 @@
   margin-top: 10px;
   font-size: 14px;
   font-weight: 600;
-  color: #067d62;
+  color: #f91212;
 
   display: inline-flex;
   align-items: center;
@@ -110,4 +110,26 @@
 .rating-count{
   color: #555;
   font-size: 13px;
+}
+
+.product-qty{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-label{
+  font-size: 14px;
+  color: #555;
+  font-weight: 600;
+}
+
+.qty-select{
+  width: 60px;
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  font-size: 14px;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+  background: rgb(246, 245, 245);
 }
