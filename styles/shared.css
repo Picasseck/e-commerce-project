@@ -37,6 +37,14 @@ body {
   font-weight:900;
   letter-spacing:0.2px;
 }
+
+.logo-img{
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
 .nav-link {
   text-decoration: none;
   color: var(--text);
@@ -117,4 +125,16 @@ body {
   margin: 0 0 16px;
   font-size: 20px;
   font-weight: 700;
+}
+
+.header-left{
+  display: flex;
+  align-items: center;
+}
+
+.header-right{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-self: end;
 }
