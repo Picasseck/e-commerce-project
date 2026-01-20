@@ -81,7 +81,7 @@ function renderTracking() {
 
   root.innerHTML = `
     <div class="tracking-card">
-      <img class="tracking-item-image" src="${product?.images || ''}" alt="${name}">
+      <img class="tracking-item-image" src="${product?.images || ''}" alt="${productName}">
       <h1 class="tracking-title">Tracking</h1>
       <p class="tracking-subtitle">${productName}</p>
 
@@ -118,7 +118,7 @@ updateCartQuantity();
 setupHeaderSearchRedirect();
 } catch (error) {
     console.error(error);
-    const root = $('.js-orders');
+    const root = $('.js-tracking');
     if (root) root.innerHTML = `<p>Unable to load products. Use Live Server and refresh.</p>`;
     updateCartQuantity();
   }
